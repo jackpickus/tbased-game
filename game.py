@@ -1,8 +1,10 @@
 import time
 import sys
+from PIL import Image
 from room import Room
 
-commands = ['back', 'go', 'help', 'quit']
+commands = ['back', 'go', 'help', 'map', 'quit']
+filename = './biggie_smoke.jpg'
 
 def location(room):
     room.speak()
@@ -27,6 +29,9 @@ def run_command(command, room):
         location(room)
         print('These are the commands you have:')
         print(commands)
+    elif com[0] == 'map':
+        the_map = Image.open(filename)
+        the_map.show()
     else:
         print('I\'m sorry I don\'t know what you mean')
 
