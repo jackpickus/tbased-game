@@ -68,6 +68,8 @@ def play_game():
         quarters,
     ]
 
+    back_stack = [] # stack to use for going back
+
     hangar.speak()
     curr_room = hangar
     prev_room = None
@@ -86,6 +88,7 @@ def play_game():
             if com_split[1] == 'north' and curr_room.neighbors[0] != '':
                 # user typed 'go north'
                 room_to_find = curr_room.neighbors[0]
+                back_stack.append(curr_room)
                 for r in the_rooms:
                     if r.name == room_to_find:
                         curr_room = r
@@ -93,6 +96,7 @@ def play_game():
             elif com_split[1] == 'east' and curr_room.neighbors[1] != '':
                 # user typed 'go east'
                 room_to_find = curr_room.neighbors[1]
+                back_stack.append(curr_room)
                 for r in the_rooms:
                     if r.name == room_to_find:
                         curr_room = r
@@ -100,6 +104,7 @@ def play_game():
             elif com_split[1] == 'south' and curr_room.neighbors[2] != '':
                 # user typed 'go south'
                 room_to_find = curr_room.neighbors[2]
+                back_stack.append(curr_room)
                 for r in the_rooms:
                     if r.name == room_to_find:
                         curr_room = r
@@ -107,6 +112,7 @@ def play_game():
             elif com_split[1] == 'west' and curr_room.neighbors[3] != '':
                 # user typed 'go west'
                 room_to_find = curr_room.neighbors[3]
+                back_stack.append(curr_room)
                 for r in the_rooms:
                     if r.name == room_to_find:
                         curr_room = r
@@ -114,7 +120,11 @@ def play_game():
             else:
                 print('You can\'t go that way!')
         elif com_split[0] == 'back':
-            print('You went back')
+            if back_stack == []:
+                print('You can\'t go back anymore')
+            else:
+                curr_room = back_stack.pop()
+                location(curr_room)
             # curr_room = prev_room
         else:
             run_command(user_input, curr_room)
