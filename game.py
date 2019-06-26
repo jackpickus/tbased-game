@@ -3,7 +3,8 @@ import sys
 from PIL import Image
 from room import Room
 
-commands = ['back', 'go', 'help', 'map', 'quit']
+commands = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup' 'quit', 'search']
+backpack = []
 filename = './biggie_smoke.jpg'
 
 def location(room):
@@ -32,6 +33,28 @@ def run_command(command, room):
     elif com[0] == 'map':
         the_map = Image.open(filename)
         the_map.show()
+    elif com[0] == 'pickup' and len(com) == 2:
+        if com[1] in room.items:
+            backpack.append(com[1])
+            room.remove_item(com[1])
+            print_words('You just picked up ' + com[1])
+        else:
+            print_words('Does not compute. Try using \'pickup\' another way')
+    elif com[0] == 'drop' and len(com) == 2:
+        if com[1] in backpack:
+            backpack.remove(com[1])
+            room.add_item(com[1])
+            print_words('You just dropped ' + com[1])
+        else:
+            print_words('Does not compute. Try using \'drop\' another way')
+    elif com[0] == 'backpack':
+        print_words('You have these items in your backpack: ' + str(backpack))
+    elif com[0] == 'search':
+        if len(room.items) == 0:
+            print_words('There are no items here')
+        else:
+            print_words('As you look around the room you see these items')
+            print(room.items)
     else:
         print('I\'m sorry I don\'t know what you mean')
 
@@ -43,19 +66,18 @@ def print_words(words):
             sys.stdout.flush()
             time.sleep(0.1)
         sys.stdout.write(' ') # keep in outer loop so only prints spaces between words
+    print()
 		
 def play_game():
     playing = True
     print_words('You are standing in an empty hangar')
-    print()
     print_words('Your head is throbbing and your space suit has been damaged significantly')
-    print()
 
     # All rooms on map
-    hangar = Room('hangar', [])
-    briefing_room = Room('briefing room', [])
-    cafeteria = Room('cafeteria', [])
-    quarters = Room('quarters', [])
+    hangar = Room('hangar', [], [])
+    briefing_room = Room('briefing room', [], [])
+    cafeteria = Room('cafeteria', [], [])
+    quarters = Room('quarters', [], [])
 
     # add rooms models
     # example.add_neighbors(['north neighbor', 'east neighbor', 'south neighbor', 'west neighbor'])
@@ -65,6 +87,8 @@ def play_game():
     cafeteria.add_neighbors(['quarters', '', '', 'hangar'])
     quarters.add_neighbors(['', '', 'cafeteria', 'briefing room'])
 
+    cafeteria.add_items(['gun'])
+    quarters.add_items(['tape'])
 
     the_rooms = [
         hangar,
@@ -85,7 +109,7 @@ def play_game():
         com_split = user_input.split()
         if user_input == None or user_input == '':
             continue
-        elif user_input == 'quit' or user_input == 'Quit':
+        elif user_input == 'quit' or user_input == 'q':
             playing = False
         elif com_split[0] == 'go' and len(com_split) == 1:
             print('Go where? Your choices are north, south, east, and west')
