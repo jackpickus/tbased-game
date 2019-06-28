@@ -6,6 +6,7 @@ from room import Room
 commands = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup' 'quit', 'search']
 backpack = []
 filename = './biggie_smoke.jpg'
+secret_room_open = False
 
 def location(room):
     room.speak()
@@ -23,6 +24,7 @@ def location(room):
     directions = []
 
 def run_command(command, room):
+    global secret_room_open
     com = command.split()
     if com[0] == 'help':
         print()
@@ -38,6 +40,8 @@ def run_command(command, room):
             backpack.append(com[1])
             room.remove_item(com[1])
             print_words('You just picked up ' + com[1])
+            if com[1] == 'key':
+                commands.append(com[1])
         else:
             print_words('Does not compute. Try using \'pickup\' another way')
     elif com[0] == 'drop' and len(com) == 2:
@@ -55,6 +59,11 @@ def run_command(command, room):
         else:
             print_words('As you look around the room you see these items')
             print(room.items)
+    elif com[0] == 'key' and 'key' in backpack and room.name == 'briefing room':
+        commands.remove('key')
+        backpack.remove('key')
+        print_words('Using the key you found, the secret room has been opened')
+        secret_room_open = True
     else:
         print('I\'m sorry I don\'t know what you mean')
 
@@ -78,16 +87,18 @@ def play_game():
     briefing_room = Room('briefing room', [], [])
     cafeteria = Room('cafeteria', [], [])
     quarters = Room('quarters', [], [])
+    secret = Room('secret room', [], [])
 
     # add rooms models
     # example.add_neighbors(['north neighbor', 'east neighbor', 'south neighbor', 'west neighbor'])
     # no neighbor is denoted as empty strings
     hangar.add_neighbors(['briefing room', 'cafeteria', '', ''])
-    briefing_room.add_neighbors(['', 'quarters', 'hangar', ''])
+    briefing_room.add_neighbors(['', 'quarters', 'hangar', 'secret room'])
     cafeteria.add_neighbors(['quarters', '', '', 'hangar'])
     quarters.add_neighbors(['', '', 'cafeteria', 'briefing room'])
+    secret.add_neighbors(['', 'briefing room', '', ''])
 
-    cafeteria.add_items(['gun'])
+    cafeteria.add_items(['key'])
     quarters.add_items(['tape'])
 
     the_rooms = [
@@ -95,15 +106,17 @@ def play_game():
         briefing_room,
         cafeteria,
         quarters,
+        secret
     ]
 
     back_stack = [] # stack to use for going back
 
     hangar.speak()
     curr_room = hangar
-    prev_room = None
 
+    global secret_room_open
     while(playing): 
+
         user_input = input('> ')	
         user_input = user_input.strip()
         com_split = user_input.split()
@@ -141,11 +154,14 @@ def play_game():
             elif com_split[1] == 'west' and curr_room.neighbors[3] != '':
                 # user typed 'go west'
                 room_to_find = curr_room.neighbors[3]
-                back_stack.append(curr_room)
-                for r in the_rooms:
-                    if r.name == room_to_find:
-                        curr_room = r
-                location(curr_room)
+                if room_to_find == 'secret room' and not secret_room_open:
+                    print_words('This door is locked.')
+                else:
+                    back_stack.append(curr_room)
+                    for r in the_rooms:
+                        if r.name == room_to_find:
+                            curr_room = r
+                    location(curr_room)
             else:
                 print('You can\'t go that way!')
         elif com_split[0] == 'back':
@@ -154,7 +170,6 @@ def play_game():
             else:
                 curr_room = back_stack.pop()
                 location(curr_room)
-            # curr_room = prev_room
         else:
             run_command(user_input, curr_room)
 
