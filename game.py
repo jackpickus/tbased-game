@@ -1,11 +1,10 @@
-import time
-import sys
-from PIL import Image
 from room import Room
+from PrintOut import print_words
+from PIL import Image
 
-commands = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup' 'quit', 'search']
+commands = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup', 'talk', 'quit', 'search']
 backpack = []
-filename = './biggie_smoke.jpg'
+filename = './map.jpg'
 secret_room_open = False
 
 def location(room):
@@ -64,30 +63,26 @@ def run_command(command, room):
         backpack.remove('key')
         print_words('Using the key you found, the secret room has been opened')
         secret_room_open = True
+    elif com[0] == 'talk':
+        if room.habitant != None:
+            room.habitant.speak()
+        else:
+            print_words('There is no one here to talk to')
     else:
         print('I\'m sorry I don\'t know what you mean')
 
-def print_words(words):
-    words = words.split()
-    for w in words:
-        for c in w:
-            sys.stdout.write(c)
-            sys.stdout.flush()
-            time.sleep(0.1)
-        sys.stdout.write(' ') # keep in outer loop so only prints spaces between words
-    print()
-		
 def play_game():
     playing = True
     print_words('You are standing in an empty hangar')
     print_words('Your head is throbbing and your space suit has been damaged significantly')
 
     # All rooms on map
-    hangar = Room('hangar', [], [])
-    briefing_room = Room('briefing room', [], [])
-    cafeteria = Room('cafeteria', [], [])
-    quarters = Room('quarters', [], [])
-    secret = Room('secret room', [], [])
+    # room structure: Room('name', [neighbors], [items], [people in room])
+    hangar = Room('hangar', [], [], [])
+    briefing_room = Room('briefing room', [], [], [])
+    cafeteria = Room('cafeteria', [], [], [])
+    quarters = Room('quarters', [], [], [])
+    secret = Room('secret room', [], [], [])
 
     # add rooms models
     # example.add_neighbors(['north neighbor', 'east neighbor', 'south neighbor', 'west neighbor'])
@@ -114,7 +109,11 @@ def play_game():
     hangar.speak()
     curr_room = hangar
 
-    global secret_room_open
+    survivor_info = ['Survivor',  'You must find the key and unlock the room']
+    briefing_room.make_person(survivor_info)
+
+    global secret_room_open # boolean for unlocking room
+
     while(playing): 
 
         user_input = input('> ')	
