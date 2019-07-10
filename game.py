@@ -1,10 +1,9 @@
 from room import Room
 from PrintOut import print_words
-from PIL import Image
+from Map import show_map
 
 commands = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup', 'talk', 'quit', 'search']
 backpack = []
-filename = './map.jpg'
 secret_room_open = False
 
 def location(room):
@@ -32,8 +31,7 @@ def run_command(command, room):
         print('These are the commands you have:')
         print(commands)
     elif com[0] == 'map':
-        the_map = Image.open(filename)
-        the_map.show()
+        show_map();
     elif com[0] == 'pickup' and len(com) == 2:
         if com[1] in room.items:
             backpack.append(com[1])
