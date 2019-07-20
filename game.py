@@ -1,6 +1,6 @@
 from room import Room
 from PrintOut import print_words
-from Map import show_map
+from Map import *
 
 commands = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup', 'talk', 'quit', 'search']
 backpack = []
@@ -31,7 +31,10 @@ def run_command(command, room):
         print('These are the commands you have:')
         print(commands)
     elif com[0] == 'map':
-        show_map();
+        if secret_room_open:
+            show_secret_map()
+        else:
+            show_map()
     elif com[0] == 'pickup' and len(com) == 2:
         if com[1] in room.items:
             backpack.append(com[1])
