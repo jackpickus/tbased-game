@@ -2,7 +2,7 @@ from room import Room
 from PrintOut import print_words
 from Map import *
 
-commands = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup', 'talk', 'quit', 'search']
+COMMANDS = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup', 'talk', 'quit', 'search']
 backpack = []
 secret_room_open = False
 
@@ -17,8 +17,8 @@ def location(room):
         directions.append('south')
     if room.neighbors[3] != '':
         directions.append('west')
-    print ('You can go: ', end="", flush=True)
-    print(*directions, sep = ", ")  
+    print('You can go: ', end="", flush=True)
+    print(*directions, sep=", ")
     directions = []
 
 def run_command(command, room):
@@ -29,7 +29,7 @@ def run_command(command, room):
         print('You must repair your space suit and investigate what has happened to the space station')
         location(room)
         print('These are the commands you have:')
-        print(commands)
+        print(COMMANDS)
     elif com[0] == 'map':
         if secret_room_open:
             show_secret_map()
@@ -41,7 +41,7 @@ def run_command(command, room):
             room.remove_item(com[1])
             print_words('You just picked up ' + com[1])
             if com[1] == 'key':
-                commands.append(com[1])
+                COMMANDS.append(com[1])
         else:
             print_words('Does not compute. Try using \'pickup\' another way')
     elif com[0] == 'drop' and len(com) == 2:
@@ -54,18 +54,18 @@ def run_command(command, room):
     elif com[0] == 'backpack':
         print_words('You have these items in your backpack: ' + str(backpack))
     elif com[0] == 'search':
-        if len(room.items) == 0:
+        if room.items == []:
             print_words('There are no items here')
         else:
             print_words('As you look around the room you see these items')
             print(room.items)
     elif com[0] == 'key' and 'key' in backpack and room.name == 'briefing room':
-        commands.remove('key')
+        COMMANDS.remove('key')
         backpack.remove('key')
         print_words('Using the key you found, the secret room has been opened')
         secret_room_open = True
     elif com[0] == 'talk':
-        if room.habitant != None:
+        if room.habitant is not None:
             room.habitant.speak()
         else:
             print_words('There is no one here to talk to')
@@ -110,19 +110,19 @@ def play_game():
     hangar.speak()
     curr_room = hangar
 
-    survivor_info = ['Survivor',  'You must find the key and unlock the room']
+    survivor_info = ['Survivor', 'You must find the key and unlock the room']
     briefing_room.make_person(survivor_info)
 
     global secret_room_open # boolean for unlocking room
 
-    while(playing): 
+    while playing:
 
-        user_input = input('> ')	
+        user_input = input('> ')
         user_input = user_input.strip()
         com_split = user_input.split()
-        if user_input == None or user_input == '':
+        if user_input is None or user_input == '':
             continue
-        elif user_input == 'quit' or user_input == 'q':
+        elif user_input in ('quit', 'q'):
             playing = False
         elif com_split[0] == 'go' and len(com_split) == 1:
             print('Go where? Your choices are north, south, east, and west')
@@ -176,6 +176,6 @@ def play_game():
 def main():
     play_game()
 
-if __name__== "__main__":
+if __name__ == "__main__":
     main()
-
+    
