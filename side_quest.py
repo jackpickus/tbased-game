@@ -1,4 +1,7 @@
 import pygame
+# import time
+import random
+
 pygame.init()
 
 display_width = 800
@@ -21,7 +24,7 @@ asteroidImg = pygame.transform.scale(pygame.image.load('img/asteroid.png'), (80,
 def spaceship(x, y):
     gameDisplay.blit(spaceshipImg, (x, y))
 
-def asteriod(x, y):
+def asteroid(x, y):
     asteroidImg = pygame.transform.scale(pygame.image.load('img/asteroid.png'), (80, 100))
     gameDisplay.blit(asteroidImg, (x, y))
 
@@ -33,7 +36,11 @@ def game_loop():
     x_change = 0
     y_change = 0
 
+    asteroid_change = -125
+
     playing = True
+
+    asteroid_start = random.randrange(0, display_width)
 
     while playing:
 
@@ -71,8 +78,14 @@ def game_loop():
         if y < 0:
             y = 0
 
+        if asteroid_change > display_height:
+            asteroid_change = -125
+            asteroid_start = random.randrange(0, display_width)
+
+        asteroid_change += 3
+
         spaceship(x, y)
-        asteriod(300, 300)
+        asteroid(asteroid_start, asteroid_change)
 
         pygame.display.update()
         clock.tick(60)
