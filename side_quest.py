@@ -19,13 +19,12 @@ ship_height = 35
 clock = pygame.time.Clock()
 
 spaceshipImg = pygame.image.load('img/spaceship.png')
-asteroidImg = pygame.transform.scale(pygame.image.load('img/asteroid.png'), (80, 100))
+asteroidImg = pygame.transform.scale(pygame.image.load('img/asteroid.png'), (230, 250))
 
 def spaceship(x, y):
     gameDisplay.blit(spaceshipImg, (x, y))
 
 def asteroid(x, y):
-    asteroidImg = pygame.transform.scale(pygame.image.load('img/asteroid.png'), (80, 100))
     gameDisplay.blit(asteroidImg, (x, y))
 
 # space_ship_speed = 0 Not sure what this is
@@ -40,7 +39,7 @@ def game_loop():
 
     playing = True
 
-    asteroid_start = random.randrange(0, display_width)
+    asteroid_start = random.randrange(0, display_width - 300)
 
     while playing:
 
@@ -86,6 +85,11 @@ def game_loop():
 
         spaceship(x, y)
         asteroid(asteroid_start, asteroid_change)
+
+        # Collision detection is primitive since detecting asteroid as a square
+        if x >= asteroid_start - 25 and x <= asteroid_start + 200:
+            if y >= asteroid_change and y <= asteroid_change + 200:
+                quit()
 
         pygame.display.update()
         clock.tick(60)
