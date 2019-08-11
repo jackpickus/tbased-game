@@ -1,10 +1,24 @@
+import os
+import pdb
 from room import Room
 from PrintOut import print_words
 from Map import *
+# from side_quest import play_quest
 
 COMMANDS = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup', 'talk', 'quit', 'search']
 backpack = []
 secret_room_open = False
+
+def in_secret_room():
+    print_words('As you look around the secret room')
+    print_words('You see an old T7000 spaceship')
+    print_words('It\'s out of ammo but appears flyable')
+    print('Do you get in (yes or no)?')
+    response = input('> ')
+    if response == 'yes' or response == 'y':
+        os.system('python3 side_quest.py') 
+    else:
+        print_words('What are you scared of a little space flight?')
 
 def location(room):
     room.speak()
@@ -172,6 +186,9 @@ def play_game():
                 location(curr_room)
         else:
             run_command(user_input, curr_room)
+
+        if curr_room.name == 'secret room':
+            in_secret_room()
 
 def main():
     play_game()

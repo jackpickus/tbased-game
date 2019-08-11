@@ -1,5 +1,5 @@
 import pygame
-# import time
+import time
 import random
 
 pygame.init()
@@ -26,6 +26,19 @@ def spaceship(x, y):
 
 def asteroid(x, y):
     gameDisplay.blit(asteroidImg, (x, y))
+
+def text_objects(text, font):
+    textSurface = font.render(text, True, white)
+    return textSurface, textSurface.get_rect()
+
+def display_message(message):
+    largeText = pygame.font.Font('freesansbold.ttf', 115)
+    TextSurf, TextRect = text_objects(message, largeText)
+    TextRect.center = ((display_width / 2), (display_height / 2))
+    gameDisplay.blit(TextSurf, TextRect)
+    pygame.display.update()
+    time.sleep(2)
+    quit()
 
 # space_ship_speed = 0 Not sure what this is
 def game_loop():
@@ -89,11 +102,13 @@ def game_loop():
         # Collision detection is primitive since detecting asteroid as a square
         if x >= asteroid_start - 25 and x <= asteroid_start + 200:
             if y >= asteroid_change and y <= asteroid_change + 200:
-                quit()
+                display_message('You crashed!')
 
         pygame.display.update()
         clock.tick(60)
 
+# def play_quest():
 game_loop()
 pygame.quit()
 quit()
+
