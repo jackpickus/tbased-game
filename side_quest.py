@@ -107,6 +107,10 @@ def game_loop():
         pygame.display.update()
         clock.tick(60)
 
+        if pygame.time.get_ticks() >= 15000:
+            print('You survived!')
+            quit()
+
 # def play_quest():
 game_loop()
 pygame.quit()

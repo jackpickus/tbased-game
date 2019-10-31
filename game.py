@@ -8,15 +8,22 @@ from Map import *
 COMMANDS = ['back', 'backpack', 'drop', 'go', 'help', 'map', 'pickup', 'talk', 'quit', 'search']
 backpack = []
 secret_room_open = False
+first_time = True
 
 def in_secret_room():
-    print_words('As you look around the secret room')
-    print_words('You see an old T7000 spaceship')
-    print_words('It\'s out of ammo but appears flyable')
-    print('Do you get in (yes or no)?')
+    global first_time
+    if first_time:
+        print_words('As you look around the secret room')
+        print_words('You see an old T7000 spaceship')
+        print_words('It\'s out of ammo but appears flyable')
+        print('Do you get in (yes or no)?')
+        first_time = False
+    else:
+        print_words('Would you like to enter the spaceship (yes or no)?')
+
     response = input('> ')
     if response == 'yes' or response == 'y':
-        os.system('python3 side_quest.py') 
+        os.system('python3 side_quest.py')
     else:
         print_words('What are you scared of a little space flight?')
 
@@ -124,7 +131,7 @@ def play_game():
     hangar.speak()
     curr_room = hangar
 
-    survivor_info = ['Survivor', 'You must find the key and unlock the room']
+    survivor_info = ['Jim Johns', 'You must find the key and unlock the room']
     briefing_room.make_person(survivor_info)
 
     global secret_room_open # boolean for unlocking room
